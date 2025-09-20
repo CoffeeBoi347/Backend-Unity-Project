@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8bc1a3ec6ead4e4e9d2a9ce024a8db4, type: 3}
   m_Name: BackendConfigOBJ
   m_EditorClassIdentifier: 
-  urlPath: http://127.0.0.1:5000/hello
-  requestMethod: GET
+  urlPath: http://127.0.0.1:5000/submit
+  requestMethod: POST
