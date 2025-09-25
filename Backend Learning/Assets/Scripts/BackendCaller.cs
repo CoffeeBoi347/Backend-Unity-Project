@@ -31,8 +31,7 @@ public class BackendCaller : MonoBehaviour
 
     private IEnumerator ReceiveFromBackend(string pathName, string requestMethod)
     {
-        StartCoroutine(CallBackend(pathName, requestMethod));
-        string json = JsonUtility.ToJson(new WebMessage { message = "Hello", score = 10, status ="OK"});
+        string json = JsonUtility.ToJson(new WebMessage { message = "Hello", score = -100, status = "OK" });
         UnityWebRequest webRequest = new UnityWebRequest(pathName, requestMethod);
         webRequest.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
         webRequest.downloadHandler = new DownloadHandlerBuffer();
@@ -42,6 +41,7 @@ public class BackendCaller : MonoBehaviour
 
         if(webRequest.result == UnityWebRequest.Result.Success)
         {
+            Debug.Log($"Server Response: {webRequest.downloadHandler.text}");
             webMessage = JsonUtility.FromJson<WebMessage>(webRequest.downloadHandler.text);
             
             message = webMessage.message;
