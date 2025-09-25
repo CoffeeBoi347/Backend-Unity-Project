@@ -5,6 +5,7 @@ app = flask.Flask(__name__)
 
 users = {}
 tokens = {}
+deleted_users = {}
 
 @app.route("/register", methods=["POST"])
 def registerUser():
@@ -39,6 +40,46 @@ def loginUser():
     token = str(uuid.uuid4())
     tokens[token] = username
     return flask.jsonify({"status":"OK.", "token":token}), 200
+
+@app.route("/delete", methods=["DELETE"])
+def deleteUser():
+    data = flask.request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    if not username:
+        return flask.jsonify({"error":"User does not exist."}), 400
+    
+    if username in deleted_users:
+        return flask.jsonify({"error": "User profile is already removed."}), 409
+    
+    if username not in users:
+        return flask.jsonify({"error":"User does not exist."}), 404
+    
+    token = str(uuid.uuid4())
+    tokens[token] = username
+    deleted_users[username] = password
+
+    del users[username]
+    return flask.jsonify({"status":"OK.", "token": token}), 200
+
+@app.route("/updatepass", methods=["POST"])
+def updatePassword():
+    data = flask.request.get_json()
+    username = data.get("username")
+    password = data.get("password")
+
+    if not username:
+        return flask.jsonify({"error":"User does not exist."}), 400
+    
+    if username not in users:
+        return flask.jsonify({"error":"User does not exist."}), 404
+    
+    users[username] = password 
+
+    token = str(uuid.uuid4())
+    tokens[token] = username
+    return flask.jsonify({"status":"OK.", "token": token}), 200
 
 @app.route("/getusers", methods=["GET"])
 def getDatabase():
